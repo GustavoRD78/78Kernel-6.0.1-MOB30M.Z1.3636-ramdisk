@@ -25,6 +25,10 @@ on early-fs
     exec u:r:qti_init_shell:s0 -- /sbin/wait4tad_static
 
 on fs
+    # Swapping (using ZRAM)
+    write /proc/sys/vm/page-cluster 0
+    swapon_all fstab.qcom
+
     # Mount LTA-Label
     mkdir /lta-label 0555 system system
     wait /dev/block/platform/msm_sdcc.1/by-name/LTALabel
