@@ -3,8 +3,6 @@
 import init.sony.usb.rc
 
 on init
-    # Load persistent dm-verity state
-    verity_load_state
 
     mkdir /tmp
     mount tmpfs tmpfs /tmp nosuid mode=0755,uid=0,gid=0
@@ -14,13 +12,6 @@ on init
 on fs
     # Install exfat module to support exfat file system
     insmod /system/lib/modules/texfat.ko
-
-on post-fs
-    # Adjust parameters for dm-verity device
-    write /sys/block/dm-0/queue/read_ahead_kb 2048
-
-    # Update dm-verity state and set partition.*.verified properties
-    verity_update_state
 
 on post-fs-data
     mkdir /data/credmgr 0770 system credmgr_client
@@ -55,9 +46,6 @@ on boot
     # NFC local data and storage
     mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
-
-on verity-logging
-    exec u:r:slideshow:s0 -- /sbin/slideshow -t 7000 warning/verity_red_1 warning/verity_red_2
 
 on property:dev.bootcomplete=1
     start startup-prober
